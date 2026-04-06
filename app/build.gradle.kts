@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -51,10 +51,15 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)       // Kirjautuminen
+    implementation(libs.firebase.firestore)  // NoSQL-tietokanta
+    implementation(libs.firebase.storage)    // Tiedostojen tallennus
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // Compose BOM — hallitsee Compose-kirjastojen versiot automaattisesti
     val composeBom = platform(libs.androidx.compose.bom)

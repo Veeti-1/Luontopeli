@@ -11,17 +11,32 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import com.example.luontopeli.ml.ClassificationResult
 import com.example.luontopeli.ui.navigation.LuontopeliBottomBar
 import com.example.luontopeli.ui.navigation.LuontopeliNavHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -111,4 +126,75 @@ fun LuontoPeli() {
         )
     }
 }
+@Composable
+fun ClassificationResultCard(result: ClassificationResult) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = when (result) {
+                is ClassificationResult.Success ->
+                    if (result.confidence > 0.8f)
+                        MaterialTheme.colorScheme.primaryContainer
+                    else
+                        MaterialTheme.colorScheme.secondaryContainer
+                else -> MaterialTheme.colorScheme.errorContainer
+            }
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            when (result) {
+                is ClassificationResult.Success -> {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Tunnistettu:",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        // Varmuustaso-badge
+                        Badge(
+                            containerColor = when {
+                                result.confidence > 0.8f -> Color(0xFF2E7D32)
+                                result.confidence > 0.6f -> Color(0xFFF57C00)
+                                else -> Color(0xFFD32F2F)
+                            }
+                        ) {
+                            Text("${"%.0f".format(result.confidence * 100)}%")
+                        }
+                    }
+
+                    Text(
+                        text = result.label,
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+
+                    // Varmuuspalkki
+                    LinearProgressIndicator(
+                        progress = result.confidence,
+                        modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
+                        color = when {
+                            result.confidence > 0.8f -> Color(0xFF2E7D32)
+                            result.confidence > 0.6f -> Color(0xFFF57C00)
+                            else -> Color(0xFFD32F2F)
+                        }
+                    )
+                }
+
+                is ClassificationResult.NotNature -> {
+                    Text("Ei luontokohde", style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "Kuvassa tunnistettiin: ${result.allLabels.joinToString { it.text }}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+
+                is ClassificationResult.Error -> {
+                    Text("Tunnistus epäonnistui: ${result.message}",
+                        style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
+    }
+}
+
 

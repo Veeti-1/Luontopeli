@@ -5,17 +5,12 @@ package com.example.luontopeli.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import android.app.Application
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.luontopeli.data.local.AppDatabase
 import com.example.luontopeli.data.local.entity.NatureSpot
-import com.example.luontopeli.data.remote.firebase.AuthManager
-import com.example.luontopeli.data.remote.firebase.FirestoreManager
-import com.example.luontopeli.data.remote.firebase.StorageManager
 import com.example.luontopeli.data.repository.NatureSpotRepository
 import com.example.luontopeli.ml.ClassificationResult
 import com.example.luontopeli.ml.PlantClassifier
@@ -24,80 +19,75 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 
 
-class CameraViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val db = AppDatabase.getDatabase(application)
-
-    private val repository = NatureSpotRepository(
-        dao = db.natureSpotDao(),
-        firestoreManager = FirestoreManager(),
-        storageManager = StorageManager(),
-        authManager = AuthManager()
-    )
-
-    private val classifier = PlantClassifier()
+class CameraViewModel(
+    private val repository: NatureSpotRepository
+) : ViewModel() {
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _capturedImagePath = MutableStateFlow<String?>(null)
     val capturedImagePath: StateFlow<String?> = _capturedImagePath.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    var currentLatitude: Double? = null
+    var currentLongitude: Double? = null
+    private val classifier = PlantClassifier()
+
 
     private val _classificationResult = MutableStateFlow<ClassificationResult?>(null)
     val classificationResult: StateFlow<ClassificationResult?> = _classificationResult.asStateFlow()
 
-    var currentLatitude: Double = 0.0
-    var currentLongitude: Double = 0.0
 
-    fun takePhoto(context: Context, imageCapture: ImageCapture) {
+    fun takePhotoAndClassify(context: Context, imageCapture: ImageCapture) {
         _isLoading.value = true
+        viewModelScope.launch {
 
-        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-            .format(Date())
+            val imagePath = takePhotoSuspend(context, imageCapture)
+            if (imagePath == null) { _isLoading.value = false; return@launch }
 
-        val outputDir = File(context.filesDir, "nature_photos").also { it.mkdirs() }
-        val outputFile = File(outputDir, "IMG_${timestamp}.jpg")
+            _capturedImagePath.value = imagePath as String?
 
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
+
+            try {
+                val uri = Uri.fromFile(File(imagePath))
+                val result = classifier.classify(uri, context)
+                _classificationResult.value = result
+            } catch (e: Exception) {
+                _classificationResult.value = ClassificationResult.Error(e.message ?: "unknow error")
+            }
+
+            _isLoading.value = false
+        }
+    }
+
+    private suspend fun takePhotoSuspend(
+        context: Context,
+        imageCapture: ImageCapture
+    ): String? = kotlinx.coroutines.suspendCancellableCoroutine { continuation ->
+
+        val file = File(
+            context.cacheDir,
+            "IMG_${System.currentTimeMillis()}.jpg"
+        )
+
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
 
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(context),
             object : ImageCapture.OnImageSavedCallback {
-
-                /** Kuva tallennettu onnistuneesti – käynnistä ML Kit -tunnistus */
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    _capturedImagePath.value = outputFile.absolutePath
-
-                    // Tunnista kasvi kuvasta ML Kit:n avulla
-                    viewModelScope.launch {
-                        try {
-                            val uri = Uri.fromFile(outputFile)
-                            val result = classifier.classify(uri, context)
-                            _classificationResult.value = result
-                        } catch (e: Exception) {
-                            _classificationResult.value =
-                                ClassificationResult.Error(e.message ?: "Tuntematon virhe")
-                        }
-                        _isLoading.value = false
-                    }
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    continuation.resume(file.absolutePath, null)
                 }
 
-                /** Kuvan otto epäonnistui (esim. kameravirhe) */
                 override fun onError(exception: ImageCaptureException) {
-                    _isLoading.value = false
+                    continuation.resume(null, null)
                 }
             }
         )
-    }
-
-    fun clearCapturedImage() {
-        _capturedImagePath.value = null
-        _classificationResult.value = null
     }
 
     fun saveCurrentSpot() {
@@ -105,7 +95,6 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             val result = _classificationResult.value
 
-            // Luodaan NatureSpot tunnistustuloksen perusteella
             val spot = NatureSpot(
                 name = when (result) {
                     is ClassificationResult.Success -> result.label
@@ -119,6 +108,7 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
             )
             repository.insertSpot(spot)
             clearCapturedImage()
+            _classificationResult.value = null
         }
     }
 
@@ -126,4 +116,8 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         super.onCleared()
         classifier.close()
     }
+    fun clearCapturedImage() {
+        _capturedImagePath.value = null
+    }
 }
+

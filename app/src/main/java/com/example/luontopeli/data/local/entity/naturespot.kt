@@ -12,8 +12,8 @@ data class NatureSpot(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
 
     val name: String,
-    val latitude: Double,
-    val longitude: Double,
+    val latitude: Double?,
+    val longitude: Double?,
     val imageLocalPath: String? = null,
     val imageFirebaseUrl: String? = null,
 

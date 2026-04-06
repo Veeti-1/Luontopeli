@@ -26,7 +26,9 @@ fun detectShake(x: Float, y: Float, z: Float): Boolean {
 }
 class StepCounterManager(context: Context) {
 
-
+companion object{
+    const val STEP_LENGTH_METERS = 0.74f
+}
     private val sensorManager =
         context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
@@ -110,4 +112,3 @@ class StepCounterManager(context: Context) {
     fun isStepSensorAvailable(): Boolean = stepSensor != null
 }
 
-const val STEP_LENGTH_METERS = 0.74f

@@ -18,9 +18,16 @@ coil = "2.7.0"
 mlkitImageLabeling = "17.0.9"
 splashscreen = "1.0.1"
 material3 = "1.4.0"
-
+lifecycleViewmodelKtx = "2.10.0"
+firebase-bom = "33.7.0"
 
 [libraries]
+# Firebase BOM hallitsee kaikkien Firebase-kirjastojen versiot
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+# Versiot tulevat BOM:sta – ei tarvitse erikseen määrittää
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistPermissions" }
 osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroid" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +60,7 @@ mlkit-image-labeling = { group = "com.google.mlkit", name = "image-labeling", ve
 # Splash Screen
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 # Accompanist Permissions
 
 [plugins]
@@ -61,5 +69,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-
+google-services = { id = "com.google.gms.google-services", version = "4.4.1" }
 
