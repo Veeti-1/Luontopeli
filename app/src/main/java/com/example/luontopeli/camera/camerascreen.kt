@@ -143,7 +143,7 @@ fun CameraScreen(viewModel: CameraViewModel = viewModel()) {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 FloatingActionButton(
-                    onClick = { viewModel.takePhoto(context, imageCapture) },
+                    onClick = { viewModel.takePhotoAndClassify(context, imageCapture) },
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     if (isLoading) {

@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.google.services)
+    //alias(libs.plugins.google.services)
 }
 
 android {
@@ -51,11 +51,11 @@ android {
 }
 
 dependencies {
-    implementation(platform(libs.firebase.bom))
+  /*  implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)       // Kirjautuminen
     implementation(libs.firebase.firestore)  // NoSQL-tietokanta
     implementation(libs.firebase.storage)    // Tiedostojen tallennus
-    implementation(libs.androidx.core.ktx)
+ */   implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.material3)
@@ -101,7 +101,7 @@ dependencies {
 
     // Splash Screen (lisätään viikolla 7)
     implementation(libs.androidx.core.splashscreen)
-
+    implementation("com.squareup:javapoet:1.13.0")
 
     implementation(libs.accompanist.permissions)
     implementation(libs.osmdroid.android)

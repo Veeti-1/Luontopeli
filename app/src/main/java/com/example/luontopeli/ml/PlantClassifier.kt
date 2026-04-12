@@ -24,6 +24,16 @@ class PlantClassifier {
 
 
     private val natureKeywords = setOf(
+        "tree",
+        "plant",
+        "flower",
+        "grass",
+        "forest",
+        "leaf",
+        "nature",
+        "wood",
+        "moss",
+        "rock"
 
     )
 

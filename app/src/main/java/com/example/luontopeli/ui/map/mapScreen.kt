@@ -141,7 +141,7 @@ fun MapScreen(
                         // Paikallinen tiedosto polusta
 
                         val marker = Marker(mapView).apply {
-                            position = GeoPoint(spot.latitude, spot.longitude)
+                            position = GeoPoint(spot.latitude!!.toDouble(), spot.longitude!!.toDouble())
                             // Näytä kasvin nimi tai kohteen nimi info-ikkunassa
                             title = spot.plantLabel ?: spot.name
                             snippet = spot.timestamp.toFormattedDate()
