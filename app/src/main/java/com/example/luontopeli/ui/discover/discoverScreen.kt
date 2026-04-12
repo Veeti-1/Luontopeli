@@ -39,10 +39,12 @@ import com.example.luontopeli.viewmodel.toFormattedDate
 import java.io.File
 import androidx.compose.material.icons.outlined.Nature
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable
-fun DiscoverScreen(viewModel: DiscoverViewModel = viewModel()) {
+fun DiscoverScreen(viewModel: DiscoverViewModel = hiltViewModel()) {
     val spots by viewModel.allSpots.collectAsState()
 
     if (spots.isEmpty()) {

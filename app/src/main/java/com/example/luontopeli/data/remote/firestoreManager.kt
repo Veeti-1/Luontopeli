@@ -1,24 +1,13 @@
 package com.example.luontopeli.data.remote
-
-// 📁 data/remote/firebase/FirestoreManager.kt
-
-import com.example.luontopeli.data.local.entity.NatureSpot
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+class firestoreManager {
 
 
-class FirestoreManager {
-
-
-    suspend fun saveSpot(spot: NatureSpot): Result<Unit> {
-        return Result.success(Unit)
+    suspend fun uploadImage(localFilePath: String, spotId: String): Result<String> {
+        return Result.success(localFilePath)
     }
 
-    /**
-     * Simuloi käyttäjän löytöjen hakemista Firestoresta.
-     * Palauttaa tyhjän listan.
-     */
-    fun getUserSpots(userId: String): Flow<List<NatureSpot>> {
-        return flowOf(emptyList())
+
+    suspend fun deleteImage(spotId: String): Result<Unit> {
+        return Result.success(Unit)
     }
 }

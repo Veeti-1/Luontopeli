@@ -16,4 +16,8 @@ interface WalkSessionDao {
 
     @Delete
     suspend fun delete(session: WalkSession)
+    @Query("SELECT * FROM walk_sessions WHERE isActive = 1 LIMIT 1")
+    suspend fun getActiveSession(): WalkSession?
+    @Update
+    suspend fun update(session: WalkSession)
 }

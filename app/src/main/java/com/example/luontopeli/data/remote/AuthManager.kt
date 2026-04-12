@@ -1,6 +1,8 @@
 package com.example.luontopeli.data.remote
 
-class AuthManager {
+import javax.inject.Inject
+
+class AuthManager @Inject constructor() {
 
     private val localUserId: String = java.util.UUID.randomUUID().toString()
 

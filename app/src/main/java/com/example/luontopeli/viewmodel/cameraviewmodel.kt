@@ -14,16 +14,18 @@ import com.example.luontopeli.data.local.entity.NatureSpot
 import com.example.luontopeli.data.repository.NatureSpotRepository
 import com.example.luontopeli.ml.ClassificationResult
 import com.example.luontopeli.ml.PlantClassifier
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 
-
-class CameraViewModel(
+@HiltViewModel
+class CameraViewModel @Inject constructor(
     private val repository: NatureSpotRepository
 ) : ViewModel() {
     private val _isLoading = MutableStateFlow(false)

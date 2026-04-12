@@ -1,11 +1,14 @@
 package com.example.luontopeli.data.remote
 
+import androidx.room.Insert
+import javax.inject.Inject
+
 
 /**
  * Offline-tilassa toimiva tallennushallinta (no-op -toteutus).
  * Korvaa alkuperäisen Firebase Storage -toteutuksen.
  */
-class StorageManager {
+class StorageManager(){
 
     /**
      * Simuloi kuvan lataamista pilvipalveluun.
