@@ -10,6 +10,9 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+
+    kotlin("kapt")
+
     //alias(libs.plugins.google.services)
 }
 
@@ -49,7 +52,9 @@ android {
         compose = true
     }
 }
-
+kapt{
+    correctErrorTypes = true
+}
 dependencies {
   /*  implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)       // Kirjautuminen
@@ -79,9 +84,11 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     // Hilt (riippuvuusinjektio)
+   // implementation(libs.hilt.android)
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    //implementation(libs.hilt.navigation.compose)
 
     // OpenStreetMap — kartat ilman API-avainta (lisätään viikolla 3)
     implementation(libs.osmdroid.android)
@@ -101,10 +108,12 @@ dependencies {
 
     // Splash Screen (lisätään viikolla 7)
     implementation(libs.androidx.core.splashscreen)
-    implementation("com.squareup:javapoet:1.13.0")
+
 
     implementation(libs.accompanist.permissions)
     implementation(libs.osmdroid.android)
     implementation(libs.accompanist.permissions)
 
 }
+
+
