@@ -1,6 +1,6 @@
 package com.example.luontopeli.camera
 
-// 📁 camera/CameraScreen.kt
+
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -61,13 +61,13 @@ fun CameraScreen(viewModel: CameraViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    // ImageCapture use case – tallennetaan muuttujaan jotta nappia painaessa voidaan käyttää
+
     val imageCapture = remember { ImageCapture.Builder()
         .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
         .build()
     }
 
-    // Lupatarkistus
+
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)

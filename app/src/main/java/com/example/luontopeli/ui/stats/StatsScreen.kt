@@ -1,4 +1,4 @@
-// 📁 ui/stats/StatsScreen.kt
+
 package com.example.luontopeli.ui.stats
 
 import androidx.compose.foundation.layout.*

@@ -1,6 +1,6 @@
 package com.example.luontopeli.viewmodel
 
-// 📁 viewmodel/CameraViewModel.kt
+
 
 
 import android.content.Context

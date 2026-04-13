@@ -1,6 +1,5 @@
 package com.example.luontopeli.data.local
 
-// 📁 data/local/AppDatabase.kt
 
 
 import android.content.Context
@@ -14,10 +13,10 @@ import com.example.luontopeli.data.local.entity.WalkSession
 
 @Database(
     entities = [
-        NatureSpot::class,   // Luontolöydöt (viikko 4)
-        WalkSession::class   // Kävelysessiot (viikko 2)
+        NatureSpot::class,
+        WalkSession::class
     ],
-    version = 2,             // Kasvatettu 1→2 koska lisättiin NatureSpot
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -34,7 +33,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "luontopeli_database"
                 )
-                    .fallbackToDestructiveMigration()  // Kehitysvaiheessa OK
+                    .fallbackToDestructiveMigration()
                     .build().also { INSTANCE = it }
             }
         }

@@ -1,6 +1,6 @@
 package com.example.luontopeli.viewmodel
 
-// 📁 viewmodel/MapViewModel.kt
+
 
 
 import android.app.Application

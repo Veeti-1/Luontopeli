@@ -1,6 +1,6 @@
 package com.example.luontopeli.ml
 
-// 📁 ml/PlantClassifier.kt
+
 
 import android.content.Context
 import android.net.Uri
